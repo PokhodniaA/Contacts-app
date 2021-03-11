@@ -45,6 +45,7 @@
 @media screen and (max-width: 600px) {
   .table {
     width: 100%;
+    min-width: 300px;
     thead {
       display: none;
     }

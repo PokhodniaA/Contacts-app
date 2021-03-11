@@ -1,5 +1,5 @@
 <template>
-  <UsersTable :columns="columns" :isButtons="true" />
+  <UsersTable :isButtons="true" />
 </template>
 
 <script>
@@ -10,16 +10,13 @@ import { mapGetters, mapMutations } from "vuex";
 import routerMixin from "@/mixins/routerMixin.js";
 
 import defaultData from "@/assets/models/users";
-import tableHeader from "@/assets/models/tableHeader";
+import inputValues from "@/assets/models/tableHeader";
 
 export default {
-  data: () => ({
-    columns: [],
-  }),
   methods: {
-    ...mapMutations(["setUsers"]),
+    ...mapMutations(["setUsers", "setValues"]),
   },
-  computed: mapGetters(["getUsers"]),
+  computed: mapGetters(["getUsers", "getValues"]),
   components: { UsersTable },
   mixins: [routerMixin],
   mounted() {
@@ -29,8 +26,8 @@ export default {
     };
 
     const localUsers = localStorage.getItem("users");
-    this.columns = tableHeader;
     localUsers ? this.setUsers(JSON.parse(localUsers)) : setDefaultData();
+    this.setValues(inputValues);
   },
 };
 </script>

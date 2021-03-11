@@ -3,7 +3,7 @@
     <Table>
       <template v-slot:thead>
         <tr>
-          <th v-for="(name, index) in columns" :key="name + index">
+          <th v-for="(name, index) in getValues" :key="name + index">
             {{ toUpperCase(name) }}
           </th>
           <th v-if="isButtons" />
@@ -12,7 +12,7 @@
 
       <template v-slot:tbody>
         <tr v-for="user in getUsers" :key="user.id">
-          <td v-for="key in columns" :key="key + user.id" :data-label="key">
+          <td v-for="key in getValues" :key="key + user.id" :data-label="key">
             {{
               key === "name" || key === "surname"
                 ? toUpperCase(user[key])
@@ -20,7 +20,7 @@
             }}
           </td>
           <td v-if="isButtons">
-            <!-- <TableButtons :users="users" :user="user" :columns="columns" /> -->
+            <TableButtons :user="user" />
           </td>
         </tr>
       </template>
@@ -30,6 +30,7 @@
 
 <script>
 import Table from "./Table";
+import TableButtons from "./TableButtons";
 
 import { mapGetters } from "vuex";
 
@@ -39,13 +40,13 @@ export default {
       return word[0].toUpperCase() + word.slice(1);
     },
   },
-  computed: mapGetters(["getUsers"]),
+  computed: mapGetters(["getUsers", "getValues"]),
   props: {
-    columns: Array,
     isButtons: Boolean,
   },
   components: {
     Table,
+    TableButtons,
   },
 };
 </script>
