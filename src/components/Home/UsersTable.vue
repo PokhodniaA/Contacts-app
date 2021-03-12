@@ -34,12 +34,9 @@ import TableButtons from "./TableButtons";
 
 import { mapGetters } from "vuex";
 
+import formatMethods from "@/mixins/formatMethods";
+
 export default {
-  methods: {
-    toUpperCase(word) {
-      return word[0].toUpperCase() + word.slice(1);
-    },
-  },
   computed: mapGetters(["getUsers", "getValues"]),
   props: {
     isButtons: Boolean,
@@ -48,6 +45,7 @@ export default {
     Table,
     TableButtons,
   },
+  mixins: [formatMethods],
 };
 </script>
 

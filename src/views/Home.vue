@@ -1,5 +1,11 @@
 <template>
-  <UsersTable :isButtons="true" />
+  <div class="home">
+    <div class="home__buttons">
+      <button class="home__button" @click="toEditPage">Add user</button>
+    </div>
+
+    <UsersTable :isButtons="true" />
+  </div>
 </template>
 
 <script>
@@ -31,3 +37,19 @@ export default {
   },
 };
 </script>
+
+<style lang="scss" scoped>
+@import "@/assets/style/var.scss";
+@import "@/assets/style/mixins.scss";
+
+.home {
+  &__buttons {
+    display: flex;
+    justify-content: center;
+  }
+
+  &__button {
+    @include main-button(#fff, #ec407a, #fff);
+  }
+}
+</style>

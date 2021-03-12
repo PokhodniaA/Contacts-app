@@ -42,7 +42,7 @@
     }
   }
 }
-@media screen and (max-width: 600px) {
+@media screen and (max-width: 700px) {
   .table {
     width: 100%;
     min-width: 300px;
