@@ -7,6 +7,7 @@ export default {
             this.showModal = true
         },
         closeModal() {
+            console.log('close');
             this.showModal = false
         }
     }

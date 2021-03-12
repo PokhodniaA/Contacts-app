@@ -1,11 +1,23 @@
 <template>
   <form class="editForm">
+    <button class="editForm__addButton" @click="undo">Undo</button>
+
     <div v-for="(key, index) in keys" :key="index" class="editForm__field">
       <label class="editForm__label">{{ toUpperCase(key) }}</label>
-      <input :placeholder="key" v-model="user[key]" class="editForm__input" />
+      <input
+        @change="toCache"
+        :placeholder="key"
+        v-model="currentUser[key]"
+        class="editForm__input"
+      />
+      <button v-if="!keys.includes(key)" class="editForm__addButton">
+        Delete
+      </button>
     </div>
 
-    <button class="editForm__button" @click="setUser">Edit</button>
+    <button class="editForm__mainButton" @click="setUser">Edit</button>
+    <button class="editForm__mainButton" @click="toMainPage">Cancel</button>
+    <button class="editForm__mainButton">Add new field</button>
   </form>
 </template>
 
@@ -15,23 +27,16 @@ import { mapGetters, mapMutations } from "vuex";
 import routerMixins from "@/mixins/routerMixin";
 import formatMethods from "@/mixins/formatMethods.js";
 import validateForms from "@/mixins/validateForms";
+
 export default {
   data: () => ({
+    currentUser: {},
     keys: [],
+    cache: [],
     isNewUser: false,
   }),
   methods: {
     ...mapMutations([""]),
-    getInputType(key) {
-      switch (key) {
-        case "phone":
-          return "tel";
-        case "email":
-          return "email";
-        default:
-          return "text";
-      }
-    },
     setUser() {
       const filledForm = this.isCorrectData(this.getValues, this.user);
       if (filledForm && !this.isNewUser) {
@@ -40,12 +45,25 @@ export default {
       } else if (filledForm && this.isNewUser) {
         this.createNewUser();
       } else {
-        alert("Fill all fields correctly");
+        alert("Fill all fields correctly"); // Сделать через модалку
       }
     },
     createNewUser() {
       this.pushUser(this.user, this.getUsers);
       this.showNewUsers(this.getUsers);
+    },
+    toCache() {
+      this.cache.push({ ...this.currentUser });
+      console.log(this.cache);
+    },
+    undo() {
+      if (this.cache.length > 1) {
+        this.cache.pop();
+        const lastIndex = this.cache.length - 1;
+
+        console.log(lastIndex, this.cache, "pop");
+        this.currentUser = { ...this.cache[lastIndex] };
+      }
     },
   },
   computed: mapGetters(["getUsers", "getValues"]),
@@ -58,12 +76,21 @@ export default {
     const userKeys = Object.keys(this.user);
     const isEmptyObject = userKeys.length;
 
+    this.currentUser = this.user;
+
     if (!isEmptyObject) {
       this.isNewUser = true;
       this.keys = this.getValues;
+      this.cache.push(
+        Object.assign(...this.getValues.map((item) => ({ [item]: "" })))
+      );
+      console.log(this.cache, "new");
     } else {
       this.keys = userKeys.filter((item) => item !== "id");
+      this.cache.push({ ...this.user });
     }
+
+    // this.keys.forEach((key) => (this.cache[key] = ""));
   },
 };
 </script>
@@ -80,7 +107,7 @@ export default {
     display: flex;
     justify-content: flex-end;
     padding: 5px;
-    min-width: 50%;
+    min-width: 70%;
 
     @media screen and (max-width: 700px) {
       width: 90%;
@@ -110,9 +137,17 @@ export default {
     }
   }
 
-  &__button {
+  &__mainButton {
     @include main-button(#fff, #ec407a, #fff);
     margin: 10px;
+  }
+
+  &__addButton {
+    @include additional-button;
+
+    margin: 0 5px;
+    height: 30px;
+    flex: 1;
   }
 }
 </style>

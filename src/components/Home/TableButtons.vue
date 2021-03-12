@@ -3,20 +3,12 @@
     <button class="buttons__button" @click="openModal">Delete</button>
     <button class="buttons__button" @click="toEditPage({ user })">Edit</button>
 
-    <Modal v-if="showModal" @close="closeModal">
-      <template v-slot:header>
-        <span>Do you really want to delete?</span>
-      </template>
-      <template v-slot:body>
-        <button class="modal__buttons" @click="removeUser">Yes</button>
-        <button class="modal__buttons" @click="closeModal">No</button>
-      </template>
-    </Modal>
+    <DeleteModal v-if="showModal" @close="closeModal" @remove="removeUser" />
   </div>
 </template>
 
 <script>
-import Modal from "@/components/Common/Modal.vue";
+import DeleteModal from "@/components/Common/Modals/DeleteModal.vue";
 
 import { mapGetters } from "vuex";
 
@@ -35,7 +27,7 @@ export default {
   props: {
     user: Object,
   },
-  components: { Modal },
+  components: { DeleteModal },
   mixins: [routerMixins, modal],
 };
 </script>
@@ -47,13 +39,6 @@ export default {
 .buttons {
   &__button {
     @include additional-button;
-    margin: 5px;
-  }
-}
-
-.modal {
-  &__buttons {
-    @include main-button;
     margin: 5px;
   }
 }
