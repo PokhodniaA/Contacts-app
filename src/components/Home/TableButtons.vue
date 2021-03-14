@@ -1,9 +1,13 @@
 <template>
   <div class="buttons">
-    <button class="buttons__button" @click="openModal">Delete</button>
+    <button class="buttons__button" @click="openModal('delete')">Delete</button>
     <button class="buttons__button" @click="toEditPage({ user })">Edit</button>
 
-    <DeleteModal v-if="showModal" @close="closeModal" @remove="removeUser" />
+    <DeleteModal
+      v-if="showModal.delete"
+      @close="closeModal('delete')"
+      @remove="removeUser"
+    />
   </div>
 </template>
 
@@ -16,6 +20,11 @@ import routerMixins from "@/mixins/routerMixin";
 import modal from "@/mixins/modal.js";
 
 export default {
+  data: () => ({
+    showModal: {
+      delete: false,
+    },
+  }),
   methods: {
     removeUser() {
       const indexToDelete = this.getUsers.indexOf(this.user);

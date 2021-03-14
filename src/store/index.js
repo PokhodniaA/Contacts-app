@@ -14,7 +14,8 @@ export default new Vuex.Store({
     },
     setValues(state, values) {
       state.values = values;
-    }
+    },
+
   },
   actions: {},
   getters: {

@@ -1,42 +1,74 @@
 <template>
   <form class="editForm">
-    <button class="editForm__addButton" @click="undo">Undo</button>
+    <button class="editForm__undoButton" @click="undo">Undo</button>
 
     <div v-for="(key, index) in keys" :key="index" class="editForm__field">
       <label class="editForm__label">{{ toUpperCase(key) }}</label>
       <input
-        @change="toCache"
+        @change="toCache(key)"
         :placeholder="key"
-        v-model="currentUser[key]"
+        v-model="user[key]"
         class="editForm__input"
       />
-      <button v-if="!keys.includes(key)" class="editForm__addButton">
+      <button
+        v-if="!getValues.includes(key)"
+        @click="deleteField(key)"
+        class="editForm__addButton"
+      >
         Delete
       </button>
     </div>
 
     <button class="editForm__mainButton" @click="setUser">Edit</button>
-    <button class="editForm__mainButton" @click="toMainPage">Cancel</button>
-    <button class="editForm__mainButton">Add new field</button>
+    <button class="editForm__mainButton" @click="openModal('cancel')">
+      Cancel
+    </button>
+    <button class="editForm__mainButton" @click="openModal('add')">
+      Add new field
+    </button>
+
+    <CancelModal
+      v-if="showModal.cancel"
+      @cancel="toMainPage"
+      @close="closeModal('cancel')"
+    />
+
+    <ErrorModal
+      v-if="showModal.error"
+      @close="closeModal('error')"
+      :message="errorMessage"
+    />
+
+    <AddField v-if="showModal.add" @close="closeModal('add')" :user="user" />
   </form>
 </template>
 
 <script>
+import CancelModal from "@/components/Common/Modals/CancelModal";
+import ErrorModal from "@/components/Common/Modals/ErrorModal";
+import AddField from "@/components/Edit/AddField";
+
 import { mapGetters, mapMutations } from "vuex";
 
 import routerMixins from "@/mixins/routerMixin";
 import formatMethods from "@/mixins/formatMethods.js";
 import validateForms from "@/mixins/validateForms";
+import modal from "@/mixins/modal";
 
 export default {
   data: () => ({
-    currentUser: {},
     keys: [],
     cache: [],
     isNewUser: false,
+    showModal: {
+      cancel: false,
+      error: false,
+      add: false,
+    },
+    errorMessage: "",
   }),
   methods: {
-    ...mapMutations([""]),
+    ...mapMutations(["updateUser"]),
     setUser() {
       const filledForm = this.isCorrectData(this.getValues, this.user);
       if (filledForm && !this.isNewUser) {
@@ -45,38 +77,63 @@ export default {
       } else if (filledForm && this.isNewUser) {
         this.createNewUser();
       } else {
-        alert("Fill all fields correctly"); // Сделать через модалку
+        this.errorMessage = "Field all fields!";
+        this.openModal("error");
       }
     },
     createNewUser() {
       this.pushUser(this.user, this.getUsers);
       this.showNewUsers(this.getUsers);
     },
-    toCache() {
-      this.cache.push({ ...this.currentUser });
+    toCache(key) {
+      console.log(key, "key");
+      console.log(this.user, "user to cache");
+      this.cache.push({ ...this.user });
+
       console.log(this.cache);
     },
     undo() {
       if (this.cache.length > 1) {
         this.cache.pop();
         const lastIndex = this.cache.length - 1;
+        const data = this.cache[lastIndex];
 
-        console.log(lastIndex, this.cache, "pop");
-        this.currentUser = { ...this.cache[lastIndex] };
+        for (let key in this.user) {
+          data[key] !== undefined
+            ? (this.user[key] = data[key])
+            : this.deleteField(key);
+        } // v-model новой строки не обновляеться, хотя данные изменяються
+
+        console.log(this.user, this.cache, "after");
       }
+    },
+    // updateData() {
+    //   const userKeys = Object.keys(this.user);
+
+    //   console.log(this.user, "user");
+    //   this.keys = userKeys.filter((item) => item !== "id");
+    //   // this.cache = [];
+    //   this.toCache();
+    // },
+    deleteField(key) {
+      delete this.user[key];
+      const index = this.keys.indexOf(key);
+      this.keys.splice(index, 1);
+      this.toCache();
+      console.log(this.user, this.keys, "delete");
     },
   },
   computed: mapGetters(["getUsers", "getValues"]),
   props: {
     user: Object,
   },
-  components: {},
-  mixins: [routerMixins, formatMethods, validateForms],
-  created() {
+  components: { CancelModal, ErrorModal, AddField },
+  mixins: [routerMixins, formatMethods, validateForms, modal],
+  mounted() {
     const userKeys = Object.keys(this.user);
     const isEmptyObject = userKeys.length;
 
-    this.currentUser = this.user;
+    // start
 
     if (!isEmptyObject) {
       this.isNewUser = true;
@@ -84,13 +141,19 @@ export default {
       this.cache.push(
         Object.assign(...this.getValues.map((item) => ({ [item]: "" })))
       );
-      console.log(this.cache, "new");
     } else {
       this.keys = userKeys.filter((item) => item !== "id");
       this.cache.push({ ...this.user });
     }
 
     // this.keys.forEach((key) => (this.cache[key] = ""));
+  },
+  beforeUpdate() {
+    const userKeys = Object.keys(this.user);
+
+    console.log(this.user, "user");
+    this.keys = userKeys.filter((item) => item !== "id");
+    this.toCache();
   },
 };
 </script>
@@ -142,12 +205,18 @@ export default {
     margin: 10px;
   }
 
-  &__addButton {
+  &__undoButton {
     @include additional-button;
 
     margin: 0 5px;
     height: 30px;
-    flex: 1;
+  }
+
+  &__addButton {
+    @include additional-button;
+
+    height: 30px;
+    position: absolute;
   }
 }
 </style>

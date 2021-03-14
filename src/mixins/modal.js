@@ -1,14 +1,10 @@
 export default {
-    data: () => ({
-        showModal: false
-    }),
     methods: {
-        openModal() {
-            this.showModal = true
+        openModal(type) {
+            this.showModal[type] = true
         },
-        closeModal() {
-            console.log('close');
-            this.showModal = false
+        closeModal(type) {
+            this.showModal[type] = false
         }
     }
 }
