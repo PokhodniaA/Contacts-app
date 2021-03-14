@@ -37,7 +37,8 @@ export default {
       const obj = this.parse(this.input);
       if (obj) {
         const key = Object.keys(obj)[0];
-        this.user[key] = obj[key];
+        this.$set(this.user, key, obj[key]);
+        // this.user[key] = obj[key];
         this.update();
         this.close();
       }

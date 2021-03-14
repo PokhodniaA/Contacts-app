@@ -2,21 +2,23 @@
   <form class="editForm">
     <button class="editForm__undoButton" @click="undo">Undo</button>
 
-    <div v-for="(key, index) in keys" :key="index" class="editForm__field">
-      <label class="editForm__label">{{ toUpperCase(key) }}</label>
-      <input
-        @change="toCache(key)"
-        :placeholder="key"
-        v-model="user[key]"
-        class="editForm__input"
-      />
-      <button
-        v-if="!getValues.includes(key)"
-        @click="deleteField(key)"
-        class="editForm__addButton"
-      >
-        Delete
-      </button>
+    <div v-for="(value, key) in user" :key="key" class="editForm__field">
+      <div v-if="key != 'id'" class="editForm__wrapper">
+        <label class="editForm__label">{{ toUpperCase(key) }}</label>
+        <input
+          @change="toCache()"
+          :placeholder="key"
+          v-model="user[key]"
+          class="editForm__input"
+        />
+        <button
+          v-if="!getValues.includes(key)"
+          @click="openModal('delete', key)"
+          class="editForm__addButton"
+        >
+          Delete
+        </button>
+      </div>
     </div>
 
     <button class="editForm__mainButton" @click="setUser">Edit</button>
@@ -39,13 +41,25 @@
       :message="errorMessage"
     />
 
-    <AddField v-if="showModal.add" @close="closeModal('add')" :user="user" />
+    <DeleteModal
+      v-if="showModal.delete"
+      @close="closeModal('delete')"
+      @remove="removeField()"
+    />
+
+    <AddField
+      v-if="showModal.add"
+      @close="closeModal('add')"
+      @update="toCache"
+      :user="user"
+    />
   </form>
 </template>
 
 <script>
 import CancelModal from "@/components/Common/Modals/CancelModal";
 import ErrorModal from "@/components/Common/Modals/ErrorModal";
+import DeleteModal from "@/components/Common/Modals/DeleteModal";
 import AddField from "@/components/Edit/AddField";
 
 import { mapGetters, mapMutations } from "vuex";
@@ -57,13 +71,14 @@ import modal from "@/mixins/modal";
 
 export default {
   data: () => ({
-    keys: [],
     cache: [],
     isNewUser: false,
     showModal: {
       cancel: false,
       error: false,
+      delete: false,
       add: false,
+      args: [],
     },
     errorMessage: "",
   }),
@@ -85,75 +100,85 @@ export default {
       this.pushUser(this.user, this.getUsers);
       this.showNewUsers(this.getUsers);
     },
-    toCache(key) {
-      console.log(key, "key");
-      console.log(this.user, "user to cache");
+    toCache() {
       this.cache.push({ ...this.user });
-
-      console.log(this.cache);
     },
     undo() {
-      if (this.cache.length > 1) {
-        this.cache.pop();
-        const lastIndex = this.cache.length - 1;
-        const data = this.cache[lastIndex];
+      const cache = this.cache;
 
-        for (let key in this.user) {
-          data[key] !== undefined
-            ? (this.user[key] = data[key])
-            : this.deleteField(key);
-        } // v-model новой строки не обновляеться, хотя данные изменяються
-
-        console.log(this.user, this.cache, "after");
+      if (cache.length > 1) {
+        cache.pop();
+        this.updateUser();
       }
     },
-    // updateData() {
-    //   const userKeys = Object.keys(this.user);
-
-    //   console.log(this.user, "user");
-    //   this.keys = userKeys.filter((item) => item !== "id");
-    //   // this.cache = [];
-    //   this.toCache();
-    // },
+    removeField() {
+      const key = this.showModal.args[0];
+      this.deleteField(key);
+      this.closeModal("delete");
+    },
     deleteField(key) {
-      delete this.user[key];
-      const index = this.keys.indexOf(key);
-      this.keys.splice(index, 1);
+      this.$delete(this.user, key);
       this.toCache();
-      console.log(this.user, this.keys, "delete");
+    },
+
+    updateUser() {
+      const cache = this.cache;
+      const lastData = cache[cache.length - 1];
+
+      const userKeys = this.getAllKeyNames(this.user, userKeys); // unique keys of object1
+      const dataKeys = this.getAllKeyNames(lastData, dataKeys); // unique keys of object2
+
+      // get a list of all the keys that are in object1, but not in object2
+      const userDiff = [...userKeys].filter((x) => !dataKeys.has(x));
+
+      // // get a list of all the keys that are in object2, but not in object1
+      // const dataDiff = [...dataKeys].filter((x) => !userKeys.has(x));
+
+      for (let key in lastData) {
+        if (this.user[key] && lastData[key]) {
+          this.user[key] = lastData[key];
+        } else if (!this.user[key] && lastData[key]) {
+          this.$set(this.user, key, lastData[key]);
+        }
+      }
+
+      if (userDiff.length > 0) {
+        for (let key of userDiff) {
+          this.$delete(this.user, key);
+        }
+      }
+    },
+    getAllKeyNames(obj) {
+      const res = new Set();
+
+      Object.keys(obj).forEach(function (k) {
+        res.add(k);
+      });
+
+      return res;
     },
   },
   computed: mapGetters(["getUsers", "getValues"]),
+
   props: {
     user: Object,
   },
-  components: { CancelModal, ErrorModal, AddField },
+  components: { CancelModal, ErrorModal, DeleteModal, AddField },
   mixins: [routerMixins, formatMethods, validateForms, modal],
+
   mounted() {
     const userKeys = Object.keys(this.user);
-    const isEmptyObject = userKeys.length;
+    const userLength = userKeys.length;
 
-    // start
-
-    if (!isEmptyObject) {
-      this.isNewUser = true;
-      this.keys = this.getValues;
-      this.cache.push(
-        Object.assign(...this.getValues.map((item) => ({ [item]: "" })))
-      );
+    if (userLength) {
+      this.toCache();
     } else {
-      this.keys = userKeys.filter((item) => item !== "id");
-      this.cache.push({ ...this.user });
+      // this.isNewUser = true;
+      // this.keys = this.getValues;
+      // this.cache.push(
+      //   Object.assign(...this.getValues.map((item) => ({ [item]: "" })))
+      // );
     }
-
-    // this.keys.forEach((key) => (this.cache[key] = ""));
-  },
-  beforeUpdate() {
-    const userKeys = Object.keys(this.user);
-
-    console.log(this.user, "user");
-    this.keys = userKeys.filter((item) => item !== "id");
-    this.toCache();
   },
 };
 </script>
@@ -168,6 +193,13 @@ export default {
   align-items: center;
   &__field {
     display: flex;
+    justify-content: center;
+
+    width: 100%;
+  }
+
+  &__wrapper {
+    display: flex;
     justify-content: flex-end;
     padding: 5px;
     min-width: 70%;
@@ -176,6 +208,7 @@ export default {
       width: 90%;
     }
   }
+
   &__label {
     text-align: start;
     padding: 5px;
@@ -210,6 +243,7 @@ export default {
 
     margin: 0 5px;
     height: 30px;
+    // align-self: flex-start;
   }
 
   &__addButton {
