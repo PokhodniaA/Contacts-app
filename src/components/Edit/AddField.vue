@@ -6,7 +6,12 @@
       >
     </template>
     <template v-slot:body>
-      <input type="text" class="modal__input" v-model="input" />
+      <input
+        type="text"
+        class="modal__input"
+        @keyup.enter="add"
+        v-model="input"
+      />
       <span v-if="error" class="modal__error">Uncorrect data.</span>
     </template>
     <template v-slot:footer>
@@ -44,7 +49,8 @@ export default {
     },
     parse(str) {
       const arr = str.split(":");
-      if (arr.length == 2) {
+      console.log(arr);
+      if (arr.length == 2 && arr[0]) {
         return { [arr[0].trim()]: arr[1].trim() };
       } else {
         this.showError();
