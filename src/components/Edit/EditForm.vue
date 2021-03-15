@@ -150,9 +150,11 @@ export default {
 
       // iterate of lastData, and replace all keys what have lastData.
       for (let key in lastData) {
-        if (this.user[key] && lastData[key]) {
+        const isString = typeof lastData[key] == "string";
+
+        if (this.user[key] && isString) {
           this.user[key] = lastData[key];
-        } else if (!this.user[key] && lastData[key]) {
+        } else if (!this.user[key] && isString) {
           this.$set(this.user, key, lastData[key]);
         }
       }
@@ -193,6 +195,7 @@ export default {
       this.user = Object.assign(
         ...this.getValues.map((item) => ({ [item]: "" }))
       );
+      this.toCache();
     }
   },
 };
