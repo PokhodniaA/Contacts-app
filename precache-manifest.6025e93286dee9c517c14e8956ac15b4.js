@@ -1,7 +1,7 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "10a0415b3e69495d27c8",
-    "url": "/Contacts-app/css/app.dd774e8b.css"
+    "revision": "41c1b38b1a599666cc06",
+    "url": "/Contacts-app/css/app.3481b0b8.css"
   },
   {
     "revision": "650cdc57dc0be3a71cc230a760215df5",
@@ -12,12 +12,12 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/Contacts-app/img/undo-arrow.2cf22e0e.svg"
   },
   {
-    "revision": "01a358fd0a30eb43e0dafd6b85a187d7",
+    "revision": "687d80460389eccc7b354fa1f1cff12f",
     "url": "/Contacts-app/index.html"
   },
   {
-    "revision": "10a0415b3e69495d27c8",
-    "url": "/Contacts-app/js/app.d1e6e3de.js"
+    "revision": "41c1b38b1a599666cc06",
+    "url": "/Contacts-app/js/app.ee2326df.js"
   },
   {
     "revision": "c814a61af6cc4f18b956",

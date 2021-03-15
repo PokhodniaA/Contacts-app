@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/Contacts-app/precache-manifest.d587f69407facc355f36a95195a0c5b5.js"
+  "/Contacts-app/precache-manifest.6025e93286dee9c517c14e8956ac15b4.js"
 );
 
 workbox.core.setCacheNameDetails({prefix: "contacts-app"});
