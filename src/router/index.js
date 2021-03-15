@@ -13,12 +13,12 @@ const routes = [
     component: Home
   },
   {
-    path: "/edit",
+    path: "/edit/:id",
     name: "Edit",
     component: Edit,
     props: true,
     beforeEnter(to, { name }, next) {
-      (name == 'Home') ? next() : next('/');
+      (name == 'Home') ? next() : next('/'); // Have an issue. I don't know how it fixed.
     },
   },
 ];

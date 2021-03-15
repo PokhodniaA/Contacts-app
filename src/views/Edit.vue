@@ -20,19 +20,6 @@ export default {
   },
   created() {
     this.user = this.$route.params.user || {};
-
-    // const params = this.$route.params.user;
-
-    // if (params) {
-    //   this.user = this.$route.params.user;
-    // } else {
-    //   const user = {};
-    //   this.getValues.forEach((element) => {
-    //     user[element] = "";
-    //   });
-    //   this.user = user;
-    //   console.log(this.user);
-    // }
   },
 };
 </script>
