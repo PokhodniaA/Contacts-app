@@ -5,5 +5,6 @@ module.exports = {
                 prependData: '@import "@/assets/style/style.scss";'
             }
         }
-    }
+    },
+    publicPath: '/Contacts-app/'
 }
