@@ -6,8 +6,4 @@ module.exports = {
             }
         }
     },
-    publicPath: '/Contacts-app/',
-    configureWebpack: {
-        devtool: 'source-map'
-    }
 }
