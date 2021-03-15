@@ -4,7 +4,6 @@ export default {
             this.showModal[type] = true
             if (args.length > 0) {
                 this.showModal.args = args
-                console.log(args);
             }
         },
         closeModal(type) {

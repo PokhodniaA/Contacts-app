@@ -89,8 +89,12 @@ export default {
   }),
   methods: {
     ...mapMutations(["updateUser"]),
+
+    // Apply users
+
     setUser() {
-      const filledForm = this.isCorrectData(this.getValues, this.user);
+      const filledForm = this.isCorrectData(this.getValues, this.user); // Test on the completion of all fields
+
       if (filledForm && !this.isNewUser) {
         localStorage.setItem("users", JSON.stringify(this.getUsers));
         this.toMainPage();
@@ -102,9 +106,12 @@ export default {
       }
     },
     createNewUser() {
-      this.pushUser(this.user, this.getUsers);
-      this.showNewUsers(this.getUsers);
+      this.pushUser(this.user, this.getUsers); // Push user in users array
+      this.showNewUsers(this.getUsers); // Set new data in localStorage and show main page
     },
+
+    // Cache
+
     toCache() {
       this.cache.push({ ...this.user });
     },
@@ -116,6 +123,9 @@ export default {
         this.updateUser();
       }
     },
+
+    // Delete field
+
     removeField() {
       const key = this.showModal.args[0];
       this.deleteField(key);
@@ -126,16 +136,19 @@ export default {
       this.toCache();
     },
 
+    // Update Data
+
     updateUser() {
       const cache = this.cache;
       const lastData = cache[cache.length - 1];
 
-      const userKeys = this.getAllKeyNames(this.user, userKeys); // unique keys of object1
-      const dataKeys = this.getAllKeyNames(lastData, dataKeys); // unique keys of object2
+      const userKeys = this.getAllKeyNames(this.user, userKeys); // unique keys of user
+      const dataKeys = this.getAllKeyNames(lastData, dataKeys); // unique keys of lastData
 
-      // get a list of all the keys that are in object1, but not in object2
+      // get a list of all the keys that are in user, but not in lastData
       const userDiff = [...userKeys].filter((x) => !dataKeys.has(x));
 
+      // iterate of lastData, and replace all keys what have lastData.
       for (let key in lastData) {
         if (this.user[key] && lastData[key]) {
           this.user[key] = lastData[key];
@@ -144,6 +157,7 @@ export default {
         }
       }
 
+      // if lastData haven't keys but the user has it, then delete this keys from the user
       if (userDiff.length > 0) {
         for (let key of userDiff) {
           this.$delete(this.user, key);
@@ -161,7 +175,6 @@ export default {
     },
   },
   computed: mapGetters(["getUsers", "getValues"]),
-
   props: {
     currentUser: Object,
   },
@@ -193,6 +206,9 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  // Fields
+
   &__field {
     display: flex;
     justify-content: center;
@@ -204,6 +220,7 @@ export default {
     position: relative;
     display: flex;
     justify-content: flex-end;
+
     padding: 5px;
     min-width: 70%;
 
@@ -218,35 +235,43 @@ export default {
   }
 
   &__label {
-    text-align: start;
     padding: 5px;
     flex: 1;
+
+    text-align: start;
   }
+
   &__input {
-    flex: 4; //  поправить адаптивность
+    flex: 4;
+
     margin-bottom: 10px;
     min-width: 40%;
     padding: 5px;
+
     font-family: Avenir, Helvetica, Arial, sans-serif;
     text-align: center;
-    color: #2c3e50;
-    border: 1px solid #2c3e50;
+    color: $text-color;
+
+    border: 1px solid $border-color;
     border-radius: 5px;
+
     transition: 0.2s;
+
     &:focus {
-      outline: none;
-      border: 1px solid #ec407a;
+      border: 1px solid $main-color;
       border-radius: 5px;
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+      outline: none;
     }
   }
 
   // Buttons
 
   &__buttonsWrapper {
-    width: 70%;
     display: flex;
     justify-content: flex-start;
+
+    width: 70%;
 
     @media screen and (max-width: 700px) {
       width: 90%;
@@ -254,7 +279,8 @@ export default {
   }
 
   &__mainButton {
-    @include main-button(#fff, #ec407a, #fff);
+    @include main-button;
+
     margin: 10px;
   }
 
@@ -272,9 +298,18 @@ export default {
 
     transform: translateX(32px);
 
+    &:hover {
+      transform: translateX(32px) scale(1.2);
+    }
+
     @media screen and (max-width: 500px) {
       right: 10px;
+
       transform: none;
+
+      &:hover {
+        transform: scale(1.2);
+      }
     }
   }
 }

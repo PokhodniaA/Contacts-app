@@ -24,13 +24,3 @@ export default {
   components: { Modal },
 };
 </script>
-
-<style lang="scss" scoped>
-@import "@/assets/style/var.scss";
-@import "@/assets/style/mixins.scss";
-
-.modal {
-  &__text {
-  }
-}
-</style>

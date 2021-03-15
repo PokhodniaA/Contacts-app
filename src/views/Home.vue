@@ -26,6 +26,7 @@ export default {
   components: { UsersTable },
   mixins: [routerMixin],
   mounted() {
+    // Here's a check localStorage. If we can't find users in localStorage, then we upload their from JSON file.
     const setDefaultData = () => {
       this.setUsers(defaultData);
       localStorage.setItem("users", JSON.stringify(defaultData));
@@ -49,7 +50,7 @@ export default {
   }
 
   &__button {
-    @include main-button(#fff, #ec407a, #fff);
+    @include main-button;
   }
 }
 </style>

@@ -48,6 +48,7 @@ export default {
 .buttons {
   &__button {
     @include additional-button;
+
     margin: 5px;
   }
 }

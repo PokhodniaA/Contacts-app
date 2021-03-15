@@ -17,7 +17,6 @@ export default new Vuex.Store({
     },
 
   },
-  actions: {},
   getters: {
     getUsers(state) {
       return state.users;
@@ -25,6 +24,5 @@ export default new Vuex.Store({
     getValues(state) {
       return state.values;
     }
-  },
-  modules: {}
+  }
 });

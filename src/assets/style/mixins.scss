@@ -2,51 +2,65 @@
 
 // Buttons
 
-@mixin main-button($bg: #fff, $hover-bg: #ec407a, $color: #fff) {
+@mixin main-button($bg: $bg-color, $hover-bg: $main-color) {
   padding: 10px;
   width: 30%;
-  transition: 0.2s;
+
   background: $bg;
   border: 1px solid #2c3e50;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
-
   outline: none;
+
+  transition: 0.2s;
 
   &:hover {
     background: $hover-bg;
-    color: $color;
+    color: $bg;
 
     cursor: pointer;
+  }
+
+  @media screen and (max-width: 700px) {
+    width: 50%;
+  }
+
+  @media screen and (max-width: 500px) {
+    width: 70%;
   }
 }
 
 @mixin additional-button {
   min-width: 60px;
   padding: 3px;
-  background: #fff;
-  border: 1px solid #2c3e50;
+
+  background: $bg-color;
+  border: 1px solid $border-color;
   outline: none;
+
   &:hover {
-    background: #fafafa;
-    border: 1px solid #ec407a;
+    background: $bg-hover-color;
+    border: 1px solid $main-color;
+
     cursor: pointer;
   }
 }
 
-@mixin icon-button{
+@mixin icon-button {
+  height: 30px;
+
   background: none;
-    border: none;
-    outline: none;
-    height: 30px;
+  border: none;
+  outline: none;
 
-    :hover {
-      transform: scale(1.2);
-      cursor: pointer;
-    }
+  transition: 0.3s;
 
-    img {
-      width: 20px;
+  &:hover {
+    transform: scale(1.2);
 
-      transition: 0.2s;
-    }
+    cursor: pointer;
+  }
+
+  img {
+    width: 20px;
+  }
 }

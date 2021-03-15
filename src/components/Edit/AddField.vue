@@ -28,16 +28,8 @@ export default {
     input: "",
     error: false,
   }),
+
   methods: {
-    close() {
-      this.$emit("close");
-    },
-    showError() {
-      this.error = true;
-      setTimeout(() => {
-        this.error = false;
-      }, 2000);
-    },
     add() {
       const obj = this.parse(this.input);
       if (obj) {
@@ -49,9 +41,9 @@ export default {
     },
     parse(str) {
       const arr = str.split(":");
-      console.log(arr);
+
       if (arr.length == 2 && arr[0]) {
-        return { [arr[0].trim()]: arr[1].trim() };
+        return { [arr[0].trim().toLowerCase()]: arr[1].trim().toLowerCase() };
       } else {
         this.showError();
         return null;
@@ -59,6 +51,15 @@ export default {
     },
     update() {
       this.$emit("update");
+    },
+    close() {
+      this.$emit("close");
+    },
+    showError() {
+      this.error = true;
+      setTimeout(() => {
+        this.error = false;
+      }, 2000);
     },
   },
   props: {
@@ -77,29 +78,33 @@ export default {
   &__input {
     width: 100%;
     padding: 5px;
+
     font-family: Avenir, Helvetica, Arial, sans-serif;
     text-align: center;
-    color: #2c3e50;
-    border: 1px solid #2c3e50;
+    color: $text-color;
+
+    border: 1px solid $border-color;
     border-radius: 5px;
+
     transition: 0.2s;
+
     &:focus {
-      outline: none;
-      border: 1px solid #ec407a;
+      border: 1px solid $main-color;
       border-radius: 5px;
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+      outline: none;
     }
   }
 
   &__button {
     @include main-button;
+
     margin: 5px;
   }
 
   &__error {
-    color: red;
+    color: $error-color;
     font-weight: 600;
-    // position: absolute;
   }
 }
 </style>
