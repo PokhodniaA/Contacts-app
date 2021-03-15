@@ -1,0 +1,66 @@
+@import "@/assets/style/var.scss";
+
+// Buttons
+
+@mixin main-button($bg: $bg-color, $hover-bg: $main-color) {
+  padding: 10px;
+  width: 30%;
+
+  background: $bg;
+  border: 1px solid #2c3e50;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
+  outline: none;
+
+  transition: 0.2s;
+
+  &:hover {
+    background: $hover-bg;
+    color: $bg;
+
+    cursor: pointer;
+  }
+
+  @media screen and (max-width: 700px) {
+    width: 50%;
+  }
+
+  @media screen and (max-width: 500px) {
+    width: 70%;
+  }
+}
+
+@mixin additional-button {
+  min-width: 60px;
+  padding: 3px;
+
+  background: $bg-color;
+  border: 1px solid $border-color;
+  outline: none;
+
+  &:hover {
+    background: $bg-hover-color;
+    border: 1px solid $main-color;
+
+    cursor: pointer;
+  }
+}
+
+@mixin icon-button {
+  height: 30px;
+
+  background: none;
+  border: none;
+  outline: none;
+
+  transition: 0.3s;
+
+  &:hover {
+    transform: scale(1.2);
+
+    cursor: pointer;
+  }
+
+  img {
+    width: 20px;
+  }
+}
