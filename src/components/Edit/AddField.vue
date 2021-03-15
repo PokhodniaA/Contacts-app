@@ -38,7 +38,6 @@ export default {
       if (obj) {
         const key = Object.keys(obj)[0];
         this.$set(this.user, key, obj[key]);
-        // this.user[key] = obj[key];
         this.update();
         this.close();
       }
@@ -46,7 +45,7 @@ export default {
     parse(str) {
       const arr = str.split(":");
       if (arr.length == 2) {
-        return { [arr[0]]: arr[1] };
+        return { [arr[0].trim()]: arr[1].trim() };
       } else {
         this.showError();
         return null;

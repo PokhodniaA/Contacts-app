@@ -1,6 +1,10 @@
 <template>
   <form class="editForm">
-    <button class="editForm__undoButton" @click="undo">Undo</button>
+    <div class="editForm__buttonsWrapper">
+      <button class="editForm__undoButton" @click="undo">
+        <img src="@/assets/img/icons/undo-arrow.svg" alt="Undo" />
+      </button>
+    </div>
 
     <div v-for="(value, key) in user" :key="key" class="editForm__field">
       <div v-if="key != 'id'" class="editForm__wrapper">
@@ -14,9 +18,9 @@
         <button
           v-if="!getValues.includes(key)"
           @click="openModal('delete', key)"
-          class="editForm__addButton"
+          class="editForm__iconButton"
         >
-          Delete
+          <img src="@/assets/img/icons/delete.svg" alt="Delete" />
         </button>
       </div>
     </div>
@@ -71,6 +75,7 @@ import modal from "@/mixins/modal";
 
 export default {
   data: () => ({
+    user: {},
     cache: [],
     isNewUser: false,
     showModal: {
@@ -92,7 +97,7 @@ export default {
       } else if (filledForm && this.isNewUser) {
         this.createNewUser();
       } else {
-        this.errorMessage = "Field all fields!";
+        this.errorMessage = "Fill in all the fields";
         this.openModal("error");
       }
     },
@@ -131,9 +136,6 @@ export default {
       // get a list of all the keys that are in object1, but not in object2
       const userDiff = [...userKeys].filter((x) => !dataKeys.has(x));
 
-      // // get a list of all the keys that are in object2, but not in object1
-      // const dataDiff = [...dataKeys].filter((x) => !userKeys.has(x));
-
       for (let key in lastData) {
         if (this.user[key] && lastData[key]) {
           this.user[key] = lastData[key];
@@ -161,23 +163,23 @@ export default {
   computed: mapGetters(["getUsers", "getValues"]),
 
   props: {
-    user: Object,
+    currentUser: Object,
   },
   components: { CancelModal, ErrorModal, DeleteModal, AddField },
   mixins: [routerMixins, formatMethods, validateForms, modal],
 
   mounted() {
-    const userKeys = Object.keys(this.user);
+    const userKeys = Object.keys(this.currentUser);
     const userLength = userKeys.length;
 
     if (userLength) {
+      this.user = this.currentUser;
       this.toCache();
     } else {
-      // this.isNewUser = true;
-      // this.keys = this.getValues;
-      // this.cache.push(
-      //   Object.assign(...this.getValues.map((item) => ({ [item]: "" })))
-      // );
+      this.isNewUser = true;
+      this.user = Object.assign(
+        ...this.getValues.map((item) => ({ [item]: "" }))
+      );
     }
   },
 };
@@ -199,6 +201,7 @@ export default {
   }
 
   &__wrapper {
+    position: relative;
     display: flex;
     justify-content: flex-end;
     padding: 5px;
@@ -206,6 +209,11 @@ export default {
 
     @media screen and (max-width: 700px) {
       width: 90%;
+    }
+
+    @media screen and (max-width: 500px) {
+      flex-direction: column;
+      justify-content: flex-start;
     }
   }
 
@@ -233,24 +241,41 @@ export default {
     }
   }
 
+  // Buttons
+
+  &__buttonsWrapper {
+    width: 70%;
+    display: flex;
+    justify-content: flex-start;
+
+    @media screen and (max-width: 700px) {
+      width: 90%;
+    }
+  }
+
   &__mainButton {
     @include main-button(#fff, #ec407a, #fff);
     margin: 10px;
   }
 
   &__undoButton {
-    @include additional-button;
+    @include icon-button;
 
     margin: 0 5px;
     height: 30px;
-    // align-self: flex-start;
   }
 
-  &__addButton {
-    @include additional-button;
+  &__iconButton {
+    @include icon-button;
 
-    height: 30px;
     position: absolute;
+
+    transform: translateX(32px);
+
+    @media screen and (max-width: 500px) {
+      right: 10px;
+      transform: none;
+    }
   }
 }
 </style>

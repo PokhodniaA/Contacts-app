@@ -14,7 +14,11 @@
           <div class="modal__footer">
             <slot name="footer"> </slot>
 
-            <button class="modal__defaultButton" @click="$emit('close')">
+            <button
+              class="modal__defaultButton"
+              v-if="showButton"
+              @click="$emit('close')"
+            >
               Close
             </button>
           </div>
@@ -23,6 +27,17 @@
     </div>
   </transition>
 </template>
+
+<script>
+export default {
+  props: {
+    showButton: {
+      type: Boolean,
+      default: true,
+    },
+  },
+};
+</script>
 
 
 <style lang="scss" scoped>

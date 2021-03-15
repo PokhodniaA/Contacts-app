@@ -16,7 +16,7 @@ import { mapGetters, mapMutations } from "vuex";
 import routerMixin from "@/mixins/routerMixin.js";
 
 import defaultData from "@/assets/models/users";
-import inputValues from "@/assets/models/tableHeader";
+import inputValues from "@/assets/models/necessaryFields";
 
 export default {
   methods: {

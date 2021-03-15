@@ -32,3 +32,21 @@
     cursor: pointer;
   }
 }
+
+@mixin icon-button{
+  background: none;
+    border: none;
+    outline: none;
+    height: 30px;
+
+    :hover {
+      transform: scale(1.2);
+      cursor: pointer;
+    }
+
+    img {
+      width: 20px;
+
+      transition: 0.2s;
+    }
+}

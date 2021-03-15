@@ -1,7 +1,7 @@
 <template>
   <div class="editPage">
     <div class="editPage__form">
-      <EditForm :user="user" />
+      <EditForm :currentUser="user" />
     </div>
   </div>
 </template>

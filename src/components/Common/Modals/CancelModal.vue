@@ -1,5 +1,5 @@
 <template>
-  <Modal @close="close">
+  <Modal @close="close" :showButton="false">
     <template v-slot:header>
       <span>Do you really want to cancel?</span>
     </template>
